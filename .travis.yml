@@ -24,7 +24,7 @@ deploy:
       tags: true
       branch: master
   - provider: script
-    script: |
+    script:
       if [ -x "$(command -v docker)" ]; then
         bash docker-push.sh ${DOCKER_USERNAME} echo-server;
       fi
