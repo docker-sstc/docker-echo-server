@@ -25,10 +25,10 @@ case `uname -s` in
         echo "Building static binaries using ekidd/rust-musl-builder"
 				image="$USER/$NAME"
         docker build -t "$image" .
-        docker run -d --name c-"$image" "$image"
-				docker stop c-"$image"
-        docker cp c-"$image":/app/main "$NAME"
-				docker rm c-"$image"
+        docker run -d --name c-"$NAME" "$image"
+				docker stop c-"$NAME"
+        docker cp c-"$NAME":/app/main "$NAME"
+				docker rm c-"$NAME"
         # docker rmi "$image"
         zip "$NAME"-"$LABEL".zip "$NAME"
         ;;
