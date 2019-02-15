@@ -7,8 +7,8 @@ rust:
 - stable
 services:
 - docker
-before_deploy:
-  if ! [[ $TRAVIS_TAG ]]; then
+before_deploy: |
+  if [[ $TRAVIS_TAG ]]; then
     bash build-release.sh ${DOCKER_USERNAME} echo-server ${TRAVIS_TAG}-${TRAVIS_OS_NAME};
   fi
 deploy:
@@ -24,7 +24,7 @@ deploy:
       tags: true
       branch: master
   - provider: script
-    script:
+    script: |
       if [ -x "$(command -v docker)" ]; then
         bash docker-push.sh ${DOCKER_USERNAME} echo-server;
       fi
