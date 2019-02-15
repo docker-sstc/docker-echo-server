@@ -24,7 +24,10 @@ deploy:
       tags: true
       branch: master
   - provider: script
-    script: bash docker-push.sh ${DOCKER_USERNAME} echo-server
+    script:
+      if ! [ -x "$(command -v docker)" ]; then
+        bash docker-push.sh ${DOCKER_USERNAME} echo-server
+      fi
     skip_cleanup: true
     on:
       repo: up9cloud/rust-echo-server
