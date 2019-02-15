@@ -31,10 +31,12 @@ case `uname -s` in
 				docker rm c-"$NAME"
         # docker rmi "$image"
         zip "$NAME"-"$LABEL".zip "$NAME"
+				ls -al
         ;;
     *)
         echo "Building standard release binaries"
         cargo build --release
         zip -j "$NAME"-"$LABEL".zip target/release/"$NAME"
+				ls -al
         ;;
 esac
