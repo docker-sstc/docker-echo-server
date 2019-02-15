@@ -7,9 +7,9 @@ rust:
 - stable
 services:
 - docker
-before_deploy:
+before_deploy: |
   if ! [[ $TRAVIS_TAG ]]; then
-    bash build-release.sh ${DOCKER_USERNAME} echo-server ${TRAVIS_TAG}-${TRAVIS_OS_NAME}
+    bash build-release.sh ${DOCKER_USERNAME} echo-server ${TRAVIS_TAG}-${TRAVIS_OS_NAME};
   fi
 deploy:
   - provider: releases
@@ -26,7 +26,7 @@ deploy:
   - provider: script
     script:
       if ! [ -x "$(command -v docker)" ]; then
-        bash docker-push.sh ${DOCKER_USERNAME} echo-server
+        bash docker-push.sh ${DOCKER_USERNAME} echo-server;
       fi
     skip_cleanup: true
     on:
