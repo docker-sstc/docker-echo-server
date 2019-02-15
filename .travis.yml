@@ -8,7 +8,7 @@ rust:
 services:
 - docker
 before_deploy:
-  - ./build-release sstc echo-server ${TRAVIS_TAG}-${TRAVIS_OS_NAME}
+  - bash build-release.sh ${DOCKER_USERNAME} echo-server ${TRAVIS_TAG}-${TRAVIS_OS_NAME}
 deploy:
   - provider: releases
     api_key:
@@ -21,7 +21,7 @@ deploy:
       tags: true
       branch: master
   - provider: script
-    script: bash docker-push.sh sstc echo-server
+    script: bash docker-push.sh ${DOCKER_USERNAME} echo-server
     on:
       repo: up9cloud/rust-echo-server
       branch: master
