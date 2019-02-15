@@ -1,0 +1,13 @@
+[package]
+name = "rust-echo-server"
+version = "0.1.0"
+authors = ["up9cloud <up9cloud.net@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+log = "0.4.0"
+env_logger = "0.6.0"
+hyper = "0.12"
+futures = "0.1"
+chrono = "0.4"
+rand = "0.6"
