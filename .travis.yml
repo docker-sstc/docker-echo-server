@@ -7,15 +7,22 @@ rust:
 - stable
 services:
 - docker
-before_deploy: "./build-release echo-server ${TRAVIS_TAG}-${TRAVIS_OS_NAME}"
+before_deploy:
+  - ./build-release sstc echo-server ${TRAVIS_TAG}-${TRAVIS_OS_NAME}
 deploy:
-  provider: releases
-  api_key:
-    secure: cbuSoQQ+2jA+o0/OnhEkCUHEpSVpGc5uAPmWJ3OkR3jHaa/SaTykaa7IXtdRGdpESMsnwetqJwr3wyBhpJ7DLbOYqssQsq3Cwi26TC2IMH+/DFi/bASRnrqZMhLfIkg7HrCWy4Ywyb4IFcPFwifqiTyCaoc0RlSDBLnCrj60bVDwhRW3lcnu9dUqoWs7Dyfjs7rDYGIK32up8WCmXLH//jKMF2OSPkHcBYjeKm3hjh8sta0kEcKq8EzfJRpLi6WRA/ihmDoHkVMNrdgktyxdx24kfXRRY3oYwCDzSBUWkmBRTK5pqh0utjND0u1wOfN76qHYpPgm+f8jDgLOCqnIccP+AHP0/EHdGvSHpGMTiD6fpi6+J9eXeO/orqe54zqXRENuJX6kiNtQdT3mPKOdLvoEugtnoJGqGSUc4btyqiRF9ubed68Eg2tqWRUoJ2hWi119O04k2HBg/tyQvA0MFyJ5r5J5ANsLSNuCetkJnQVION8ACWxl0WXuG+TwbqZ6IkvJBAATFgxFfl2r2GAuudMpM2NfnWt51ASsw9UwCclUVKNKJsqfEOBIZqioXQNdCYzXCuJ4iyWC4gdnihzADJ1l5i3fVlZO1wGam//CtymUhSKqPStysToybxtITekJC66sVBKc/WaeRO4zUgTNleJup6/lFNgpMZaZeDQWwS0=
-  file_glob: true
-  file: "echo-server-${TRAVIS_TAG}-${TRAVIS_OS_NAME}.*"
-  on:
-    repo: up9cloud/rust-echo-server
-    rust: stable
-    tags: true
-    branch: master
+  - provider: releases
+    api_key:
+      secure: cbuSoQQ+2jA+o0/OnhEkCUHEpSVpGc5uAPmWJ3OkR3jHaa/SaTykaa7IXtdRGdpESMsnwetqJwr3wyBhpJ7DLbOYqssQsq3Cwi26TC2IMH+/DFi/bASRnrqZMhLfIkg7HrCWy4Ywyb4IFcPFwifqiTyCaoc0RlSDBLnCrj60bVDwhRW3lcnu9dUqoWs7Dyfjs7rDYGIK32up8WCmXLH//jKMF2OSPkHcBYjeKm3hjh8sta0kEcKq8EzfJRpLi6WRA/ihmDoHkVMNrdgktyxdx24kfXRRY3oYwCDzSBUWkmBRTK5pqh0utjND0u1wOfN76qHYpPgm+f8jDgLOCqnIccP+AHP0/EHdGvSHpGMTiD6fpi6+J9eXeO/orqe54zqXRENuJX6kiNtQdT3mPKOdLvoEugtnoJGqGSUc4btyqiRF9ubed68Eg2tqWRUoJ2hWi119O04k2HBg/tyQvA0MFyJ5r5J5ANsLSNuCetkJnQVION8ACWxl0WXuG+TwbqZ6IkvJBAATFgxFfl2r2GAuudMpM2NfnWt51ASsw9UwCclUVKNKJsqfEOBIZqioXQNdCYzXCuJ4iyWC4gdnihzADJ1l5i3fVlZO1wGam//CtymUhSKqPStysToybxtITekJC66sVBKc/WaeRO4zUgTNleJup6/lFNgpMZaZeDQWwS0=
+    file_glob: true
+    file: "echo-server-${TRAVIS_TAG}-${TRAVIS_OS_NAME}.*"
+    on:
+      repo: up9cloud/rust-echo-server
+      rust: stable
+      tags: true
+      branch: master
+  - provider: script
+    script: bash docker-push.sh sstc echo-server
+    on:
+      repo: up9cloud/rust-echo-server
+      branch: master
+      tags: true

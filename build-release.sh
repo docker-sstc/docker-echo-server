@@ -16,19 +16,25 @@
 
 set -euo pipefail
 
+USER=$1
+NAME=$2
+LABEL=$3
+
 case `uname -s` in
     Linux)
         echo "Building static binaries using ekidd/rust-musl-builder"
-        docker build -t build-"$1"-image .
-        docker run -it --name build-"$1" build-"$1"-image
-        docker cp build-"$1":/home/rust/src/target/x86_64-unknown-linux-musl/release/"$1" "$1"
-        docker rm build-"$1"
-        docker rmi build-"$1"-image
-        zip "$1"-"$2".zip "$1"
+				image="$USER/$NAME"
+        docker build -t "$image" .
+        docker run -d --name c-"$image" "$image"
+				docker stop c-"$image"
+        docker cp c-"$image":/app/main "$NAME"
+				docker rm c-"$image"
+        # docker rmi "$image"
+        zip "$NAME"-"$LABEL".zip "$NAME"
         ;;
     *)
         echo "Building standard release binaries"
         cargo build --release
-        zip -j "$1"-"$2".zip target/release/"$1"
+        zip -j "$NAME"-"$LABEL".zip target/release/"$NAME"
         ;;
 esac
