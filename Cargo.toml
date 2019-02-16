@@ -1,6 +1,6 @@
 [package]
 name = "echo-server"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["up9cloud <up9cloud.net@gmail.com>"]
 edition = "2018"
 

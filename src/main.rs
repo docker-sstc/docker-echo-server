@@ -68,21 +68,27 @@ fn echo(req: Request<Body>) -> BoxFut {
 
     // handle status
     let headers = req.headers();
-    if headers.contains_key("X-ECHO-STATUS") {
+    if headers.contains_key("x-echo-status") {
         let req_status = headers
-            .get("X-ECHO-STATUS").unwrap()
+            .get("x-echo-status").unwrap()
             .to_str().unwrap();
         match req_status.parse::<u16>() {
             Ok(code) => {
-                info!("[{}] header X-ECHO-STATUS: {} received, response with it.", id, req_status);
-                if code < 100 || code >= 600 {
-                    result = builder.status(StatusCode::BAD_REQUEST).body(Body::empty());
-                    return Box::new(future::ok(result.unwrap()));
+                match StatusCode::from_u16(code) {
+                    Ok(status) => {
+                        info!("[{}] header x-echo-status: {} received, response with it.", id, req_status);
+                        builder.status(status);
+                    }
+                    Err(e) => {
+                        error!("[{}] header x-echo-status: {} parse to http status failed: {}", id, req_status, e);
+                        builder
+                            .status(StatusCode::BAD_REQUEST)
+                            .header("x-echo-status-error", format!("{}", e));
+                    }
                 }
-                builder.status(code);
             }
             Err(e) => {
-                error!("[{}] header X-ECHO-STATUS: {} parse to u16 error: {}", id, req_status, e);
+                error!("[{}] header x-echo-status: {} parse to u16 failed: {}", id, req_status, e);
                 builder
                     .status(StatusCode::BAD_REQUEST)
                     .header("x-echo-status-error", format!("{}", e));
