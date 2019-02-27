@@ -1,0 +1,13 @@
+[package]
+name = "echo-server"
+version = "0.1.2"
+authors = ["up9cloud (https://github.com/up9cloud)"]
+edition = "2018"
+
+[dependencies]
+log = "0.4.0"
+env_logger = "0.6.0"
+hyper = "0.12"
+futures = "0.1"
+chrono = "0.4"
+rand = "0.6"
