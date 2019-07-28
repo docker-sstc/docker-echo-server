@@ -131,8 +131,9 @@ fn echo(req: Request<Body>) -> BoxFut {
         // &Method::DELETE |
         // &Method::PATCH
         _ => {
-            if path.parent().unwrap().to_str() == Some("/_") {
-                info!("[{}] Request path is prefix with `/_`. It's system api!", id);
+            let p = &req.uri().path();
+            if p.len() >= 3 && &p[..3] == "/_/" {
+                info!("[{}] Request path is prefix with `/_/`. It's system api!", id);
                 match path.file_stem() {
                     None => {
                         result = builder.status(StatusCode::NOT_FOUND).body(Body::empty());
