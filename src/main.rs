@@ -7,7 +7,7 @@ extern crate rand;
 
 use std::io::Write;
 use std::path::Path;
-use futures::future;
+use futures::{future};
 // use http::{HeaderMap};
 
 use hyper::rt::Future;
@@ -44,11 +44,10 @@ fn gen_id (len: usize) -> String {
 fn echo(req: Request<Body>) -> BoxFut {
     let id = gen_id(6);
     let mut builder = Response::builder();
-    let mut result;
 
     builder.status(StatusCode::OK); // default
 
-    info!("[{}] Incoming path: {}", id, req.uri().path());
+    info!("[{}] incoming path: {}", id, req.uri().path());
 
     // handle content-type by extname
     let path = Path::new(req.uri().path());
@@ -76,7 +75,7 @@ fn echo(req: Request<Body>) -> BoxFut {
             Ok(code) => {
                 match StatusCode::from_u16(code) {
                     Ok(status) => {
-                        info!("[{}] header x-echo-status: {} received, response with it.", id, req_status);
+                        debug!("[{}] header x-echo-status: {} received, response with it.", id, req_status);
                         builder.status(status);
                     }
                     Err(e) => {
@@ -96,7 +95,7 @@ fn echo(req: Request<Body>) -> BoxFut {
         }
     }
 
-    match req.method() {
+    let body = match req.method() {
         // handle preflight
         &Method::OPTIONS => {
             let mut h_list = vec![];
@@ -118,12 +117,12 @@ fn echo(req: Request<Body>) -> BoxFut {
                 h_list.push(format!("{}: {}", k, v));
                 builder.header(k, v);
             }
-            info!("[{}] Method {} received. Response with preflight headers: {:?}", id, req.method(), h_list.join(", "));
-            result = builder.body(Body::empty());
+            debug!("[{}] Method {} received. Response with preflight headers: {:?}", id, req.method(), h_list.join(", "));
+            Body::empty()
         }
         &Method::HEAD => {
-            info!("[{}] Method {} received. Response with empty body.", id, req.method());
-            result = builder.body(Body::empty());
+            debug!("[{}] Method {} received. Response with empty body.", id, req.method());
+            Body::empty()
         }
         // &Method::GET |
         // &Method::POST |
@@ -136,29 +135,33 @@ fn echo(req: Request<Body>) -> BoxFut {
                 info!("[{}] Request path is prefix with `/_/`. It's system api!", id);
                 match path.file_stem() {
                     None => {
-                        result = builder.status(StatusCode::NOT_FOUND).body(Body::empty());
+                        builder.status(StatusCode::NOT_FOUND);
+                        Body::empty()
                     },
                     Some(os_str) => {
                         match os_str.to_str() {
                             Some("version") => {
+                                let mut body;
                                 if ext == "json" {
-                                    result = builder.body(Body::from(format!("\"{}\"", VERSION)));
+                                    body = Body::from(format!("\"{}\"", VERSION));
                                 } else {
-                                    result = builder.body(Body::from(VERSION));
+                                    body = Body::from(VERSION);
                                 }
+                                body
                             }
                             _ => {
-                                result = builder.status(StatusCode::NOT_FOUND).body(Body::empty());
+                                builder.status(StatusCode::NOT_FOUND);
+                                Body::empty()
                             }
                         }
                     }
                 }
             } else {
-                result = builder.body(req.into_body());
+                req.into_body()
             }
         }
-    }
-    Box::new(future::ok(result.unwrap()))
+    };
+    Box::new(future::ok(builder.body(body).unwrap()))
 }
 
 fn main() {
