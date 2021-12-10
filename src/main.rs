@@ -28,7 +28,7 @@ use env_logger::{Builder, Env};
 ///
 /// A boxed Future (trait object) is used as it is easier to understand
 /// and extend with more types. Advanced users could switch to `Either`.
-type BoxFut = Box<Future<Item = Response<Body>, Error = hyper::Error> + Send>;
+type BoxFut = Box<dyn Future<Item = Response<Body>, Error = hyper::Error> + Send>;
 
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
@@ -157,7 +157,7 @@ fn echo(req: Request<Body>) -> BoxFut {
                     }
                 }
             } else {
-                let body = req.into_body()
+                let body = req.into_body();
                 debug!("[{}] Incomming request body: {:?}", id, body);
                 body
             }
