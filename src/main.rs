@@ -157,7 +157,9 @@ fn echo(req: Request<Body>) -> BoxFut {
                     }
                 }
             } else {
-                req.into_body()
+                let body = req.into_body()
+                debug!("[{}] Incomming request body: {:?}", id, body);
+                body
             }
         }
     };
