@@ -6,15 +6,14 @@
 ## Usage
 
 ```bash
-# up server
-docker run --rm --init -p 3000:3000 sstc/echo-server
+docker run --rm --init -p 3000:3000 -e RUST_LOG=debug sstc/echo-server
 ```
 
 ## Api
 
 ### System api
 
-> All system api are prefix with `/_`
+> All system api are prefix with `/_/`
 
 ```bash
 curl localhost:3000/_/version # Server version
@@ -37,7 +36,7 @@ curl localhost:3000/_/foo # Unknown api would response 404
   {"a":123}
   ```
 
-- It would echo the status if request with header `x-echo-status`.
+- It would response the requested status by the header `x-echo-status`.
 
   ```bash
   curl -v localhost:3000/foo -H "x-echo-status: 400"
@@ -123,7 +122,7 @@ curl localhost:3000/_/foo # Unknown api would response 404
   * Connection #0 to host localhost left intact
   ```
 
-- The HEAD (bodyless) would response with empty body (won't echo).
+- The HEAD (body-less) would response with empty body (won't echo).
 
   ```bash
   curl -v localhost:3000/foo \
