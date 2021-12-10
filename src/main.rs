@@ -65,7 +65,7 @@ fn echo(req: Request<Body>) -> BoxFut {
         }
     };
 
-    // handle status
+    // feature: overwrite http status
     let headers = req.headers();
     if headers.contains_key("x-echo-status") {
         let req_status = headers
@@ -79,7 +79,7 @@ fn echo(req: Request<Body>) -> BoxFut {
                         builder.status(status);
                     }
                     Err(e) => {
-                        error!("[{}] header x-echo-status: {} parse to http status failed: {}", id, req_status, e);
+                        error!("[{}] header x-echo-status: {} received, but parse to http status failed: {}", id, req_status, e);
                         builder
                             .status(StatusCode::BAD_REQUEST)
                             .header("x-echo-status-error", format!("{}", e));
@@ -87,7 +87,7 @@ fn echo(req: Request<Body>) -> BoxFut {
                 }
             }
             Err(e) => {
-                error!("[{}] header x-echo-status: {} parse to u16 failed: {}", id, req_status, e);
+                error!("[{}] header x-echo-status: {} received, but parse to u16 failed: {}", id, req_status, e);
                 builder
                     .status(StatusCode::BAD_REQUEST)
                     .header("x-echo-status-error", format!("{}", e));
@@ -133,6 +133,7 @@ fn echo(req: Request<Body>) -> BoxFut {
             let p = &req.uri().path();
             if p.len() >= 3 && &p[..3] == "/_/" {
                 info!("[{}] Request path is prefix with `/_/`. It's system api!", id);
+                // system api can't be overwritten
                 match path.file_stem() {
                     None => {
                         builder.status(StatusCode::NOT_FOUND);
@@ -141,13 +142,11 @@ fn echo(req: Request<Body>) -> BoxFut {
                     Some(os_str) => {
                         match os_str.to_str() {
                             Some("version") => {
-                                let mut body;
                                 if ext == "json" {
-                                    body = Body::from(format!("\"{}\"", VERSION));
+                                    Body::from(format!("\"{}\"", VERSION))
                                 } else {
-                                    body = Body::from(VERSION);
+                                    Body::from(VERSION)
                                 }
-                                body
                             }
                             _ => {
                                 builder.status(StatusCode::NOT_FOUND);
@@ -158,7 +157,7 @@ fn echo(req: Request<Body>) -> BoxFut {
                 }
             } else {
                 let body = req.into_body();
-                debug!("[{}] Incomming request body: {:?}", id, body);
+                debug!("[{}] Incoming request body: {:?}", id, body);
                 body
             }
         }
