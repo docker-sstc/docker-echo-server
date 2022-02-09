@@ -1,6 +1,6 @@
 # rust-echo-server
 
-![Build workflow](https://github.com/docker-sstc/docker-echo-server/actions/workflows/main/badge.svg)
+![Build workflow](https://github.com/docker-sstc/docker-echo-server/actions/workflows/master/badge.svg)
 [![Docker pulls](https://img.shields.io/docker/pulls/sstc/echo-server.svg?colorB=green&style=flat)](https://cloud.docker.com/repository/docker/sstc/echo-server)
 
 ## Usage

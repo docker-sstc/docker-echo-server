@@ -19,7 +19,7 @@ jobs:
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD }}
       with:
         destination_container_repo: sstc/echo-server
-        short_description: https://github.com/${{ github.repository }}
+        short_description: A simple echo server for testing
     - uses: up9cloud/action-notify@master
       if: cancelled() == false
       env:
