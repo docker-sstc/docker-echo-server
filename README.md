@@ -26,8 +26,7 @@ curl localhost:3000/_/foo # Unknown api would response 404
 - It would echo request body if request without prefix of system api (works with all http verbs, except OPTIONS and HEAD).
 
   ```bash
-  curl -v localhost:3000/foo \
-    -d '{"a":123}'
+  curl -v localhost:3000/foo -d '{"a":123}'
   ```
 
   ```console
@@ -44,19 +43,17 @@ curl localhost:3000/_/foo # Unknown api would response 404
 
   ```console
   * Connected to localhost (127.0.0.1) port 3000 (#0)
-  > POST /foo HTTP/1.1
+  > GET /foo HTTP/1.1
   > Host: localhost:3000
-  > User-Agent: curl/7.64.0
+  > User-Agent: curl/7.81.0
   > Accept: */*
   > x-echo-status: 400
-  > Content-Length: 9
-  > Content-Type: application/x-www-form-urlencoded
-  >
-  * upload completely sent off: 9 out of 9 bytes
+  > 
+  * Mark bundle as not supporting multiuse
   < HTTP/1.1 400 Bad Request
-  < content-length: 9
-  < date: Sat, 16 Feb 2019 08:47:59 GMT
-  <
+  < content-length: 0
+  < date: Wed, 09 Feb 2022 21:05:23 GMT
+  < 
   * Connection #0 to host localhost left intact
   ```
 
@@ -103,22 +100,22 @@ curl localhost:3000/_/foo # Unknown api would response 404
 
   ```console
   * Connected to localhost (127.0.0.1) port 3000 (#0)
-  > OPTIONS /echo.json HTTP/1.1
+  > OPTIONS /foo HTTP/1.1
   > Host: localhost:3000
-  > User-Agent: curl/7.64.0
+  > User-Agent: curl/7.81.0
   > Accept: */*
   > Origin: http://foo.bar
   > Access-Control-Request-Method: FOOMETHOD
   > Access-Control-Request-Headers: BAR
-  >
+  > 
+  * Mark bundle as not supporting multiuse
   < HTTP/1.1 200 OK
-  < content-type: application/json
   < access-control-allow-origin: http://foo.bar
   < access-control-allow-methods: FOOMETHOD
   < access-control-allow-headers: BAR
   < content-length: 0
-  < date: Sat, 16 Feb 2019 08:12:50 GMT
-  <
+  < date: Wed, 09 Feb 2022 21:02:17 GMT
+  < 
   * Connection #0 to host localhost left intact
   ```
 
@@ -146,6 +143,17 @@ curl localhost:3000/_/foo # Unknown api would response 404
   <
   * Connection #0 to host localhost left intact
   ```
+
+## Dev memo
+
+```bash
+RUST_LOG="debug" cargo watch -x run -w src
+```
+
+> Bump version
+
+- `cargo bump patch`
+- Commit and push
 
 ## About
 
