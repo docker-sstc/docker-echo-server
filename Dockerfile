@@ -3,7 +3,6 @@ FROM --platform=linux/amd64 messense/rust-musl-cross:x86_64-musl as builder-amd6
 # We need to add the source code to the image because `rust-musl-builder`
 # assumes a UID of 1000, but TravisCI has switched to 2000.
 ADD . ./
-RUN sudo chown -R rust:rust .
 RUN cargo build --release
 
 FROM --platform=linux/amd64 scratch
@@ -14,7 +13,6 @@ CMD ["./main"]
 FROM --platform=linux/arm64 messense/rust-musl-cross:aarch64-musl as builder-arm64
 
 ADD . ./
-RUN sudo chown -R rust:rust .
 RUN cargo build --release
 
 FROM --platform=linux/arm64 scratch
